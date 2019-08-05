@@ -27,7 +27,7 @@ def hash(string, max):
     hash = 5381
     for char in string:
         # ord returns unicode point for one-char string
-        hash = (hash * 33) + ord(char)
+        hash = ((hash << 5) + hash) + ord(char)
 
     return hash % max  # returns a hashed integer between 0 and max
 
@@ -39,14 +39,14 @@ def hash(string, max):
 # '''
 def hash_table_insert(hash_table, key, value):
 
-    # hash the key, max = hash table capacity  # - 1 since index 0?
+    # hash the key, max = hash table capacity
     hashedKey = hash(key, hash_table.capacity)
     print("Hashed Key: ", hashedKey)
 
     # check if hashed key is already in hash table
     if hash_table.storage[hashedKey]:
         print(
-            f"WARNING: {key} already exists in {hash_table}. You are overwriting the current value.")
+            f"WARNING: {key} already exists in hash table. You are overwriting the current value.")
 
     # set value to the hashed key
     hash_table.storage[hashedKey] = value
@@ -59,11 +59,11 @@ def hash_table_insert(hash_table, key, value):
 # '''
 def hash_table_remove(hash_table, key):
 
-    # hash the key, max is hash table capacity # - 1 since index 0?
+    # hash the key, max is hash table capacity
     hashedKey = hash(key, hash_table.capacity)
 
     if not hash_table.storage[hashedKey]:
-        print(f"WARNING: {key} does not exist in {hash_table}.")
+        print(f"WARNING: {key} does not exist in hash table.")
 
     # set new value of key to None
     hash_table.storage[hashedKey] = None
@@ -76,7 +76,7 @@ def hash_table_remove(hash_table, key):
 # '''
 def hash_table_retrieve(hash_table, key):
 
-    # hash the key, max is hash table capacity # - 1 since index 0?
+    # hash the key, max is hash table capacity
     hashedKey = hash(key, hash_table.capacity)
 
     if not hash_table.storage[hashedKey]:
