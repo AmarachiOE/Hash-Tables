@@ -26,10 +26,12 @@ class BasicHashTable:
 def hash(string, max):
     hash = 5381
     for char in string:
-        # ord returns unicode point for one-char string
+        # ord returns unicode point/ascii value for single char
+        # << or >> is binary shifting
         hash = ((hash << 5) + hash) + ord(char)
 
-    return hash % max  # returns a hashed integer between 0 and max
+    # returns a hashed integer between 0 and max
+    return hash % max
 
 
 # '''
@@ -40,16 +42,21 @@ def hash(string, max):
 def hash_table_insert(hash_table, key, value):
 
     # hash the key, max = hash table capacity
-    hashedKey = hash(key, hash_table.capacity)
-    print("Hashed Key: ", hashedKey)
+    index = hash(key, hash_table.capacity)  # where the pair object is going
+    print("Hashed Key: ", index)
 
-    # check if hashed key is already in hash table
-    if hash_table.storage[hashedKey]:
-        print(
-            f"WARNING: {key} already exists in hash table. You are overwriting the current value.")
+    # create a pair
+    pair = Pair(key, value)
 
-    # set value to the hashed key
-    hash_table.storage[hashedKey] = value
+    # check if overwriting value with different key
+    if hash_table.storage[index]:  # if not empty
+        # if keys, not hashes, are different
+        if hash_table.storage[index].key != key:
+            print(
+                f"WARNING: You're overwriting the value at {hash_table.storage[index].key}.")
+
+    # add pair to hash table
+    hash_table.storage[index] = pair
 
 
 # '''
@@ -60,13 +67,13 @@ def hash_table_insert(hash_table, key, value):
 def hash_table_remove(hash_table, key):
 
     # hash the key, max is hash table capacity
-    hashedKey = hash(key, hash_table.capacity)
+    index = hash(key, hash_table.capacity)
 
-    if not hash_table.storage[hashedKey]:
+    if not hash_table.storage[index].key:
         print(f"WARNING: {key} does not exist in hash table.")
 
     # set new value of key to None
-    hash_table.storage[hashedKey] = None
+    hash_table.storage[index] = None
 
 
 # '''
@@ -77,12 +84,19 @@ def hash_table_remove(hash_table, key):
 def hash_table_retrieve(hash_table, key):
 
     # hash the key, max is hash table capacity
-    hashedKey = hash(key, hash_table.capacity)
+    index = hash(key, hash_table.capacity)
 
-    if not hash_table.storage[hashedKey]:
+    # if nothing in bucket at that index, return None (no pair exists)
+    if not hash_table.storage[index]:
         return None
 
-    return hash_table.storage[hashedKey]
+    # if key at index pair is not the key we're looking for, return None
+    if hash_table.storage[index].key != key:
+        return None
+
+    print("Index Key: ", hash_table.storage[index].key)
+    print("Index Value: ", hash_table.storage[index].value)
+    return hash_table.storage[index].value
 
 
 def Testing():
