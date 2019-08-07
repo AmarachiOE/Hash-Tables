@@ -37,36 +37,29 @@ def hash(string, max):
 
 # Hint: Used the LL to handle collisions
 # '''
+
 def hash_table_insert(hash_table, key, value):
     # first resize
     # hash_table_resize(hash_table)
 
     # hash the key
     index = hash(key, hash_table.capacity)
-    print("Index: ", index, "Key: ", key)
 
-    # get current pair at this index and create new linked pair
     currentPair = hash_table.storage[index]
     newPair = LinkedPair(key, value)
+    prevPair = None
 
-    # while bucket not empty and key of currentPair does not match passed in Key
+    # bucket not empty & keys don't match
     while currentPair is not None and currentPair.key != key:
-        currentPair = currentPair.next
+        prevPair = currentPair
+        currentPair = prevPair.next
 
-    if currentPair and currentPair.key == key:
-        currentPair.value = value
+    if currentPair is not None and currentPair.key == key:
+        currentPair.value = value  # update value of key
 
     elif currentPair is None:
-        oldPair = hash_table.storage[index]
-        newPair.next = oldPair
+        newPair.next = hash_table.storage[index]
         hash_table.storage[index] = newPair
-
-        # delete later
-        if oldPair is not None:
-            print("Old Pair Value: ", oldPair.value,
-                  "Old Pair Key: ", oldPair.key)
-        else:
-            print("Old Pair None")
 
 
 # '''
@@ -77,11 +70,9 @@ def hash_table_insert(hash_table, key, value):
 
 def hash_table_remove(hash_table, key):
     index = hash(key, hash_table.capacity)
-    print("Hashed Key: ", index)
 
     # get current pair at this index
     currentPair = hash_table.storage[index]
-    # prev = None
 
     if currentPair is not None:
 
@@ -89,9 +80,9 @@ def hash_table_remove(hash_table, key):
             currentPair = currentPair.next
 
         if currentPair.key == key:
+            # remove reference to key
             hash_table.storage[index] = currentPair.next
 
-    # set new value of key to None
     else:
         print(f"WARNING: {key} does not exist in hash table.")
 
@@ -101,19 +92,21 @@ def hash_table_remove(hash_table, key):
 
 # Should return None if the key is not found.
 # '''
+
 def hash_table_retrieve(hash_table, key):
     index = hash(key, hash_table.capacity)
+    currentPair = hash_table.storage[index]
 
-    # if empty bucket return none
-    if not hash_table.storage[index]:
-        return None
-
-    while hash_table.storage[index] is not None:
-        if hash_table.storage[index].key == key:
-            return hash_table.storage[index].value
+    while currentPair is not None:
+        if currentPair.key == key:
+            return currentPair.value
 
         # if not, set to .next pair
-        hash_table.storage[index] = hash_table.storage[index].next
+        currentPair = currentPair.next
+
+    # if empty bucket return none
+    if hash_table.storage[index] is None:
+        return None
 
 
 # '''
@@ -135,34 +128,6 @@ def hash_table_resize(hash_table):
             currentPair = currentPair.next
 
     return newHT
-
-
-def hash_table_resize1(hash_table):
-
-    filledSpots = 0
-    for i in range(0, len(hash_table.storage)):
-        if hash_table.storage[i] != None:
-            filledSpots += 1
-            # keyName = [key for (key, value) in hash_table.storage[i]]
-            # print("Elem = ", keyName)
-    # print("Filled = ", filledSpots)
-
-    # check if load factor reached
-    if filledSpots >= 0.7 * (hash_table.capacity):
-        # create empty hash table with 2x capacity of original
-        newHT = HashTable(2 * hash_table.capacity)
-        # hash_table.newStorage = [None] * (2*hash_table.capacity) # double capacity
-
-        # insert each elem in old ht storage to new ht storage
-        for elem in range(len(hash_table.storage)):
-            # record = hash_table.storage[elem]
-            # ht, key, value
-            hash_table_insert(newHT, elem, hash_table.storage[elem])
-
-            # then set value in old ht to None
-            hash_table.storage[elem] = None
-
-        return newHT
 
 
 def Testing():
