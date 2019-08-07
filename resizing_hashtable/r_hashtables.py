@@ -105,8 +105,8 @@ def hash_table_retrieve(hash_table, key):
         currentPair = currentPair.next
 
     # if empty bucket return none
-    if hash_table.storage[index] is None:
-        return None
+    # if currentPair is None:
+    #     return None
 
 
 # '''
@@ -122,9 +122,12 @@ def hash_table_resize(hash_table):
     for index in range(len(hash_table.storage)):
         currentPair = hash_table.storage[index]
 
-        if currentPair != None:
+        while currentPair != None:
             hash_table_insert(newHT, currentPair.key,
                               currentPair.value)  # ht, key, value
+            print([i.key for i in newHT.storage if i is not None])
+
+            # go to next pair
             currentPair = currentPair.next
 
     return newHT
