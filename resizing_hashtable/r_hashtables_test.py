@@ -69,6 +69,7 @@ class TestFullHashTable(unittest.TestCase):
         hash_table_insert(ht, "key-8", "new-val-8")
         hash_table_insert(ht, "key-9", "new-val-9")
 
+
         return_value = hash_table_retrieve(ht, "key-0")
         self.assertTrue(return_value == "new-val-0")
         return_value = hash_table_retrieve(ht, "key-1")
@@ -149,6 +150,9 @@ class TestFullHashTable(unittest.TestCase):
         hash_table_insert(ht, "key-7", "val-7")
         hash_table_insert(ht, "key-8", "val-8")
         hash_table_insert(ht, "key-9", "val-9")
+
+        # return_value = hash_table_retrieve(ht, "key-9")
+        # self.assertTrue(return_value == "val-9")
 
         ht = hash_table_resize(ht)
 
